@@ -48,7 +48,7 @@ export class Handler {
       const type = '涨';
       const msg = `[${time}][${this.name}][${type}]${this.rate}%，达到[${targetHighPrice}],当前[${current}]`;
       Utils.dingPush(msg);
-      this.redisClient.getClient().set('coin:' + this.symbol, this.lastRemindedPrice, () => {
+      this.redisClient.set('coin:' + this.symbol, this.lastRemindedPrice, () => {
 
       });
     }
@@ -59,7 +59,7 @@ export class Handler {
       const type = '跌';
       const msg = `[${time}][${this.name}][${type}]${this.rate}%，达到[${targetLowPrice}],当前[${current}]`;
       Utils.dingPush(msg);
-      this.redisClient.getClient().set('coin:' + this.symbol, this.lastRemindedPrice, () => {
+      this.redisClient.set('coin:' + this.symbol, this.lastRemindedPrice, () => {
       });
     }
   }
