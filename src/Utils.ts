@@ -1,5 +1,8 @@
 import {Constants} from './Constants';
 import axios from 'axios';
+import {getLogger} from './Logger';
+
+const logger = getLogger();
 
 export class Utils {
   /**
@@ -19,10 +22,10 @@ export class Utils {
       data: data,
       method: 'post'
     }).then(res => {
-      console.log('发送推送成功:' + msg);
+      logger.info('发送推送成功:' + msg);
     }).catch(err => {
-      console.error('发送推送异常:', err);
-    })
+      logger.info('发送推送异常:', err);
+    });
   }
 }
 

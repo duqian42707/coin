@@ -14,17 +14,3 @@ export interface KlineData {
   ts: number;
   tick: Tick;
 }
-
-export class TradePair {
-  symbol: string;
-  name: string;
-  initPrice: number;
-  rate: number;
-
-  constructor(symbol: string, name: string, initPrice: number, rate: number) {
-    this.symbol = symbol;
-    this.name = name;
-    this.initPrice = initPrice;
-    this.rate = rate;
-  }
-}

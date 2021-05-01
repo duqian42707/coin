@@ -1,17 +1,14 @@
 import {Handler} from './Handler';
-import {KlineData, TradePair} from './models';
+import {KlineData} from './models';
 import {Constants} from './Constants';
+import {getLogger} from './Logger';
 
-const webSocket = require('ws');
+const logger = getLogger();
 const pako = require('pako');
-const HttpsProxyAgent = require('https-proxy-agent');
-const url = require('url');
-const options = url.parse(Constants.proxy);
-const agent = new HttpsProxyAgent(options);
-
+const webSocket = require('ws');
 
 class Main {
-
+  ws: any;
   handlers: Handler[] = [];
 
   constructor() {
@@ -24,47 +21,54 @@ class Main {
     handler.handle(data);
   }
 
-  subscribe(ws: typeof webSocket) {
-    const trades = [
-      new TradePair('btcusdt', '比特币', 60000, 5),
-      new TradePair('filusdt', '菲尔币', 140, 5),
+  subscribe() {
+    this.handlers = [
+      new Handler('btcusdt', '比特币', 60000, 5),
+      new Handler('filusdt', '菲尔币', 140, 5),
     ];
-    for (let trade of trades) {
-      ws.send(JSON.stringify({
-        'sub': `market.${trade.symbol}.kline.1min`,
-        'id': `${trade.symbol}`
+    for (let trade of this.handlers) {
+      this.ws.send(JSON.stringify({
+        'sub': `market.${trade.getSymbol()}.kline.1min`,
+        'id': `${trade.getSymbol()}`
       }));
-      this.handlers.push(new Handler(trade.symbol, trade.name, trade.initPrice, trade.rate));
     }
   }
 
   init() {
-    console.log('程序启动中...');
-    var ws = new webSocket(Constants.wsUrl, {agent: agent});
-    ws.on('open', () => {
-      this.subscribe(ws);
+    logger.debug('程序启动中...');
+    if (Constants.proxy) {
+      const HttpsProxyAgent = require('https-proxy-agent');
+      const url = require('url');
+      const options = url.parse(Constants.proxy);
+      const agent = new HttpsProxyAgent(options);
+      this.ws = new webSocket(Constants.wsUrl, {agent: agent});
+    } else {
+      this.ws = new webSocket(Constants.wsUrl);
+    }
+    this.ws.on('open', () => {
+      this.subscribe();
     });
-    ws.on('message', (data: any) => {
+    this.ws.on('message', (data: any) => {
       let text = pako.inflate(data, {
         to: 'string'
       });
       let msg = JSON.parse(text);
       if (msg.ping) {
-        ws.send(JSON.stringify({
+        this.ws.send(JSON.stringify({
           pong: msg.ping
         }));
       } else if (msg.tick) {
         this.handle(msg as KlineData);
       } else {
-        console.log(text);
+        logger.info(text);
       }
     });
-    ws.on('close', () => {
-      console.log('close');
+    this.ws.on('close', () => {
+      logger.warn('ws close,reconnecting...');
       this.init();
     });
-    ws.on('error', (err: any) => {
-      console.log('error', err);
+    this.ws.on('error', (err: any) => {
+      logger.warn('ws error,reconnecting...');
       this.init();
     });
   }
