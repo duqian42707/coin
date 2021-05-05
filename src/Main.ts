@@ -23,8 +23,9 @@ class Main {
 
   subscribe() {
     this.handlers = [
-      new Handler('btcusdt', '比特币', 60000, 5),
-      new Handler('filusdt', '菲尔币', 140, 5),
+      new Handler('btcusdt', 'BTC', 5),
+      new Handler('filusdt', 'FIL', 5),
+      new Handler('dogeusdt', 'DOGE', 5),
     ];
     for (let trade of this.handlers) {
       this.ws.send(JSON.stringify({

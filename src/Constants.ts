@@ -2,6 +2,10 @@
  * 常量类
  */
 export const Constants = {
+  log4js: {
+    // 'default' or 'fileOnly'
+    category: 'default'
+  },
   wsUrl: 'wss://api.huobi.pro/ws',
   // 代理，为空则直连
   proxy: 'http://127.0.0.1:11188',
