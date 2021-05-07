@@ -49,8 +49,8 @@ export class Handler {
     }
     const targetHighPrice = Number((this.lastRemindedPrice * (1 + this.rate / 100)).toFixed(4));
     if (current >= targetHighPrice) {
-      const type = '涨';
-      const msg = `[${time}][${this.name}][${type}]${this.rate}%，达到[${targetHighPrice}],当前[${current}]`;
+      const type = '💚️涨';
+      const msg = `[${this.name}][${type}]${this.rate}%，当前[${current}]`;
       Utils.dingPush(msg);
       this.lastRemindedPrice = targetHighPrice;
       this.redisClient.set('coin:' + this.symbol, this.lastRemindedPrice, () => {
@@ -60,8 +60,8 @@ export class Handler {
 
     const targetLowPrice = Number((this.lastRemindedPrice * (1 - this.rate / 100)).toFixed(4));
     if (current <= targetLowPrice) {
-      const type = '跌';
-      const msg = `[${time}][${this.name}][${type}]${this.rate}%，达到[${targetLowPrice}],当前[${current}]`;
+      const type = '💔️跌';
+      const msg = `[${this.name}][${type}]${this.rate}%，当前[${current}]`;
       Utils.dingPush(msg);
       this.lastRemindedPrice = targetLowPrice;
       this.redisClient.set('coin:' + this.symbol, this.lastRemindedPrice, () => {
