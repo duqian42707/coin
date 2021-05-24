@@ -23,9 +23,8 @@ class Main {
 
   subscribe() {
     this.handlers = [
-      new Handler('btcusdt', 'BTC', 5),
-      new Handler('filusdt', 'FIL', 5),
-      new Handler('dogeusdt', 'DOGE', 5),
+      new Handler('btcusdt', 'BTC', 8),
+      new Handler('filusdt', 'FIL', 8),
     ];
     for (let trade of this.handlers) {
       this.ws.send(JSON.stringify({
@@ -66,11 +65,15 @@ class Main {
     });
     this.ws.on('close', () => {
       logger.warn('ws close,reconnecting...');
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 3000);
     });
     this.ws.on('error', (err: any) => {
       logger.warn('ws error,reconnecting...');
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 3000);
     });
   }
 }
