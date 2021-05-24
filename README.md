@@ -2,6 +2,8 @@
 
 监控目标交易对，到达设置的涨跌幅度，发送钉钉推送。
 
+接口文档地址：https://huobiapi.github.io/docs/spot/v1/cn/#websocket
+
 运行前先修改`src/Constants.ts`中的参数
 
 
@@ -32,3 +34,9 @@ npm run forever-start
 ## 效果
 
 ![](imgs/1.png)
+
+
+## 参考文章
+
+1. [火币API - Websocket行情数据](https://huobiapi.github.io/docs/spot/v1/cn/#websocket)
+2. [WebSocket-Node.js-demo](https://github.com/huobiapi/WebSocket-Node.js-demo)
