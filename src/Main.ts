@@ -70,10 +70,10 @@ class Main {
       }, 3000);
     });
     this.ws.on('error', (err: any) => {
-      logger.warn('ws error,reconnecting...');
-      setTimeout(() => {
-        this.init();
-      }, 3000);
+      // logger.warn('ws error,reconnecting...');
+      // setTimeout(() => {
+      //   this.init();
+      // }, 3000);
     });
   }
 }
