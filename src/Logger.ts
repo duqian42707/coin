@@ -1,5 +1,7 @@
 import {configure, getLogger as log4jsGetLogger, Logger} from 'log4js';
-import {Constants} from './Constants';
+import {Config} from './models';
+
+const config: Config = require('./config');
 
 /**
  * 统一日志配置
@@ -15,5 +17,5 @@ export function getLogger(): Logger {
       fileOnly: {appenders: ['file'], level: 'debug'},
     }
   });
-  return log4jsGetLogger(Constants.log4js.category);
+  return log4jsGetLogger(config.log4js);
 }

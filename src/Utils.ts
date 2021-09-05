@@ -1,7 +1,8 @@
-import {Constants} from './Constants';
 import axios from 'axios';
 import {getLogger} from './Logger';
+import {Config} from './models';
 
+const config: Config = require('./config');
 const logger = getLogger();
 
 export class Utils {
@@ -10,7 +11,7 @@ export class Utils {
    * @param msg
    */
   static dingPush(msg: string) {
-    const url = Constants.dingUrl;
+    const url = config.dingUrl;
     const data = {
       msgtype: 'text',
       text: {

@@ -4,7 +4,7 @@
 
 接口文档地址：https://huobiapi.github.io/docs/spot/v1/cn/#websocket
 
-运行前先修改`src/Constants.ts`中的参数
+运行先将`src/config.js.demo` 复制到 `src/config.js`并修改配置参数。
 
 
 ## 安装依赖包

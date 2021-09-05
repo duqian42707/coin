@@ -1,6 +1,7 @@
-import {Constants} from './Constants';
 import {getLogger} from './Logger';
+import {Config} from './models';
 
+const config: Config = require('./config');
 const logger = getLogger();
 
 // redis使用说明 https://www.npmjs.com/package/redis
@@ -16,10 +17,10 @@ export class RedisClient {
     if (this.instance == null) {
       const redis = require('redis');
       this.instance = redis.createClient({
-        host: Constants.redis.host,
-        port: Constants.redis.port,
-        password: Constants.redis.pass,
-        db: Constants.redis.database
+        host: config.redis.host,
+        port: config.redis.port,
+        password: config.redis.pass,
+        db: config.redis.database
       });
       logger.info('创建redis客户端完成。');
     }

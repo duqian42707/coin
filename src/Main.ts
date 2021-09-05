@@ -1,8 +1,8 @@
 import {Handler} from './Handler';
-import {KlineData} from './models';
-import {Constants} from './Constants';
+import {Config, KlineData} from './models';
 import {getLogger} from './Logger';
 
+const config: Config = require('./config');
 const logger = getLogger();
 const pako = require('pako');
 const webSocket = require('ws');
@@ -36,14 +36,14 @@ class Main {
 
   init() {
     logger.debug('程序启动中...');
-    if (Constants.proxy) {
+    if (config.proxy) {
       const HttpsProxyAgent = require('https-proxy-agent');
       const url = require('url');
-      const options = url.parse(Constants.proxy);
+      const options = url.parse(config.proxy);
       const agent = new HttpsProxyAgent(options);
-      this.ws = new webSocket(Constants.wsUrl, {agent: agent});
+      this.ws = new webSocket(config.wsUrl, {agent: agent});
     } else {
-      this.ws = new webSocket(Constants.wsUrl);
+      this.ws = new webSocket(config.wsUrl);
     }
     this.ws.on('open', () => {
       this.subscribe();
