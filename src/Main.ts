@@ -1,6 +1,7 @@
 import {Handler} from './Handler';
 import {Config, KlineData} from './models';
 import {getLogger} from './Logger';
+import {Utils} from './Utils';
 
 const config: Config = require('./config');
 const logger = getLogger();
@@ -10,6 +11,9 @@ const webSocket = require('ws');
 class Main {
   ws: any;
   handlers: Handler[] = [];
+  connectionLostReminded = false;
+  reConnectedReminded = false;
+  timeOnConnectionLost: number = 0;
 
   constructor() {
     this.init();
@@ -35,7 +39,7 @@ class Main {
   }
 
   init() {
-    logger.debug('程序启动中...');
+    logger.debug('尝试连接中...');
     if (config.proxy) {
       const HttpsProxyAgent = require('https-proxy-agent');
       const url = require('url');
@@ -46,6 +50,14 @@ class Main {
       this.ws = new webSocket(config.wsUrl);
     }
     this.ws.on('open', () => {
+      logger.debug('连接成功.');
+      if (this.timeOnConnectionLost > 0 && this.connectionLostReminded && !this.reConnectedReminded) {
+        logger.warn('连接已恢复.');
+        Utils.dingPush(`连接已恢复.`);
+        this.reConnectedReminded = true;
+        this.connectionLostReminded = false;
+      }
+      this.timeOnConnectionLost = 0;
       this.subscribe();
     });
     this.ws.on('message', (data: any) => {
@@ -65,9 +77,21 @@ class Main {
     });
     this.ws.on('close', () => {
       logger.warn('ws close,reconnecting...');
+      if (this.timeOnConnectionLost === 0) {
+        this.timeOnConnectionLost = new Date().getTime();
+      } else {
+        if (new Date().getTime() - this.timeOnConnectionLost > 60 * 60 * 1000) {
+          if (!this.connectionLostReminded) {
+            logger.warn('连接断开已超过60分钟.');
+            Utils.dingPush(`连接断开已超过60分钟.`);
+            this.connectionLostReminded = true;
+            this.reConnectedReminded = false;
+          }
+        }
+      }
       setTimeout(() => {
         this.init();
-      }, 3000);
+      }, 5000);
     });
     this.ws.on('error', (err: any) => {
       // logger.warn('ws error,reconnecting...');
